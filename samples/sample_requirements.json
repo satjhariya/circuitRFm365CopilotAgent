@@ -1,0 +1,46 @@
+{
+  "benchmarks": [
+    {
+      "id": "x_band_radar_front_end",
+      "title": "X-Band Airborne Phased Array Radar Front-End",
+      "frequency_band": "X-Band",
+      "f0_ghz": 10.0,
+      "bw_ghz": 1.0,
+      "min_gain_db": 24.0,
+      "max_nf_db": 2.2,
+      "min_oip3_dbm": 32.0,
+      "min_return_loss_db": 15.0,
+      "min_p1db_dbm": 18.0,
+      "application": "Active Electronically Scanned Array (AESA) Fire-Control Radar",
+      "standard": "MIL-PRF-38534 Class H & DO-160G Section 4"
+    },
+    {
+      "id": "ku_band_satcom_downconverter",
+      "title": "Ku-Band Tactical UAV SATCOM Receiver Front-End",
+      "frequency_band": "Ku-Band",
+      "f0_ghz": 14.25,
+      "bw_ghz": 0.5,
+      "min_gain_db": 30.0,
+      "max_nf_db": 1.8,
+      "min_oip3_dbm": 28.0,
+      "min_return_loss_db": 16.0,
+      "min_p1db_dbm": 14.0,
+      "application": "Tactical Unmanned Airborne System BLOS Data Link",
+      "standard": "MIL-STD-883 & RTCA DO-160G Cat A2"
+    },
+    {
+      "id": "s_band_telemetry_transceiver",
+      "title": "S-Band Missile Telemetry and Tracking Transceiver",
+      "frequency_band": "S-Band",
+      "f0_ghz": 2.25,
+      "bw_ghz": 0.1,
+      "min_gain_db": 20.0,
+      "max_nf_db": 2.5,
+      "min_oip3_dbm": 35.0,
+      "min_return_loss_db": 18.0,
+      "min_p1db_dbm": 22.0,
+      "application": "Precision Guided Munitions Telemetry",
+      "standard": "MIL-STD-810H & Space-Grade De-rating"
+    }
+  ]
+}

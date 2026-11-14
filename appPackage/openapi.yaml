@@ -1,0 +1,241 @@
+openapi: 3.0.3
+info:
+  title: CircuitRF Aerospace & Defence Automation API
+  description: REST API exposed to Microsoft 365 Copilot Agent for CircuitRF simulations, cascaded RF analysis, and automated Word/Excel document generation.
+  version: 1.0.0
+servers:
+  - url: http://localhost:8000
+    description: Localhost Bridge Server on Windows Workstation
+paths:
+  /api/rf/decompose:
+    post:
+      operationId: decomposeRequirements
+      summary: Decompose high-level RF requirements into incremental engineering steps and stage budgets
+      description: Ingests frequency band, center frequency, bandwidth, gain, and noise figure, returning an execution plan and preliminary stage lineup.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title, frequency_band, f0_ghz, bw_ghz]
+              properties:
+                title:
+                  type: string
+                  example: "X-Band Radar Front-End LNA"
+                frequency_band:
+                  type: string
+                  example: "X-Band"
+                f0_ghz:
+                  type: number
+                  example: 10.0
+                bw_ghz:
+                  type: number
+                  example: 1.0
+                min_gain_db:
+                  type: number
+                  example: 22.0
+                max_nf_db:
+                  type: number
+                  example: 2.2
+                min_oip3_dbm:
+                  type: number
+                  example: 32.0
+                application:
+                  type: string
+                  example: "Airborne Phased Array Radar"
+      responses:
+        '200':
+          description: Incremental engineering breakdown and preliminary budget
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/rf/synthesize_netlist:
+    post:
+      operationId: synthesizeNetlist
+      summary: Synthesize a CircuitRF .cnl netlist for standard RF topologies
+      description: Generates syntax-verified CircuitRF .cnl netlist for bandpass filters, attenuator pads, or custom matching.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [circuit_type, name, f0_ghz, bw_ghz]
+              properties:
+                circuit_type:
+                  type: string
+                  enum: [bandpass_filter, pi_pad, custom]
+                  example: "bandpass_filter"
+                name:
+                  type: string
+                  example: "Preselector_Filter"
+                f0_ghz:
+                  type: number
+                  example: 10.0
+                bw_ghz:
+                  type: number
+                  example: 1.0
+                attenuation_db:
+                  type: number
+                  example: 6.0
+      responses:
+        '200':
+          description: CircuitRF netlist saved on disk and returned as text
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/rf/simulate:
+    post:
+      operationId: runSimulation
+      summary: Run CircuitRF S-parameter frequency sweep simulation
+      description: Simulates .cnl netlist and extracts frequency-dependent S11, S21, S12, S22 scattering parameters.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                netlist_content:
+                  type: string
+                  description: Optional direct netlist text
+                netlist_path:
+                  type: string
+                  description: Optional path to .cnl file
+                start_ghz:
+                  type: number
+                  example: 8.0
+                stop_ghz:
+                  type: number
+                  example: 12.0
+                npts:
+                  type: integer
+                  example: 101
+      responses:
+        '200':
+          description: S-parameter simulation results with min S11 and max S21
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/rf/cascade:
+    post:
+      operationId: calculateCascade
+      summary: Calculate cascaded Friis Noise Figure, Gain, OIP3, and P1dB
+      description: Evaluates stage-by-stage cumulative parameters for receiver or transmitter lineups.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [stages]
+              properties:
+                stages:
+                  type: array
+                  items:
+                    type: object
+                    required: [name, stage_type, gain_db, nf_db]
+                    properties:
+                      name:
+                        type: string
+                      stage_type:
+                        type: string
+                      gain_db:
+                        type: number
+                      nf_db:
+                        type: number
+                      oip3_dbm:
+                        type: number
+                      p1db_dbm:
+                        type: number
+                      v_dc:
+                        type: number
+                      i_dc_ma:
+                        type: number
+      responses:
+        '200':
+          description: Cumulative cascaded RF metrics and power consumption
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/report/docx:
+    post:
+      operationId: generateDocxReport
+      summary: Generate a complete Defence & Aerospace Word (.docx) report
+      description: Produces formatted technical memorandum with embedded S-parameter plots, lineup tables, and compliance matrix.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [project_title, frequency_band, requirements, simulation_results]
+              properties:
+                project_title:
+                  type: string
+                frequency_band:
+                  type: string
+                requirements:
+                  type: object
+                simulation_results:
+                  type: object
+                cascaded_metrics:
+                  type: object
+                compliance_matrix:
+                  type: array
+                  items:
+                    type: object
+                convert_to_pdf:
+                  type: boolean
+                  default: false
+      responses:
+        '200':
+          description: Path to generated .docx (and optional .pdf) document
+          content:
+            application/json:
+              schema:
+                type: object
+
+  /api/report/xlsx:
+    post:
+      operationId: generateXlsxReport
+      summary: Export RF simulation and budget data to a multi-tab Excel (.xlsx) workbook
+      description: Generates workbook with Compliance Matrix, Cascaded Lineup Budget, and CircuitRF S-parameter dataset sheets.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [project_title, frequency_band, requirements, simulation_results]
+              properties:
+                project_title:
+                  type: string
+                frequency_band:
+                  type: string
+                requirements:
+                  type: object
+                simulation_results:
+                  type: object
+                cascaded_metrics:
+                  type: object
+                compliance_matrix:
+                  type: array
+                  items:
+                    type: object
+      responses:
+        '200':
+          description: Path to generated .xlsx workbook
+          content:
+            application/json:
+              schema:
+                type: object

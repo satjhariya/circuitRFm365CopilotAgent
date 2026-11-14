@@ -1,0 +1,41 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.17/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.17",
+  "version": "1.0.0",
+  "id": "7a3e8b41-92f1-4328-b9a6-d76f8c2b5104",
+  "developer": {
+    "name": "Aerospace & Defence RF Systems Engineering Group",
+    "websiteUrl": "https://github.com/circuitrf/copilot-agent",
+    "privacyUrl": "https://github.com/circuitrf/copilot-agent/privacy",
+    "termsOfUseUrl": "https://github.com/circuitrf/copilot-agent/terms"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "CircuitRF Agent",
+    "full": "CircuitRF Aerospace & Defence Engineering Copilot Agent"
+  },
+  "description": {
+    "short": "RF Engineering Copilot for CircuitRF simulations & reports",
+    "full": "Expert RF component design, Friis cascaded analysis, CircuitRF MCP automation, and Word/Excel technical documentation generator."
+  },
+  "accentColor": "#0F2240",
+  "copilotAgents": {
+    "declarativeAgents": [
+      {
+        "id": "circuitrf_declarative_agent",
+        "file": "declarativeAgent.json"
+      }
+    ]
+  },
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": [
+    "localhost",
+    "127.0.0.1"
+  ]
+}

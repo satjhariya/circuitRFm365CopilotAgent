@@ -1,0 +1,34 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.1/schema.json",
+  "schema_version": "v2.1",
+  "name_for_human": "CircuitRF Engine & Office Documentation Bridge",
+  "name_for_model": "circuitrf_engine",
+  "description_for_human": "Automates RF component design with CircuitRF, calculates Friis cascaded metrics, and compiles Word/Excel documentation.",
+  "description_for_model": "API bridge for CircuitRF simulation engine and Office reporting. Allows decomposing RF requirements, running S-parameter sweeps, computing cascaded lineup budgets, and generating Word (.docx) and Excel (.xlsx) files.",
+  "auth": {
+    "type": "none"
+  },
+  "runtimes": [
+    {
+      "type": "OpenAPI",
+      "auth": {
+        "type": "none"
+      },
+      "spec": {
+        "url": "openapi.yaml"
+      },
+      "run_for_functions": [
+        "decomposeRequirements",
+        "synthesizeNetlist",
+        "runSimulation",
+        "calculateCascade",
+        "generateDocxReport",
+        "generateXlsxReport"
+      ]
+    }
+  ],
+  "capabilities": {
+    "localization": {},
+    "conversation_starters": []
+  }
+}
